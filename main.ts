@@ -1,23 +1,22 @@
-// One-Sentence Absurd Invention Pitch — entry.
-// One sentence, at most 220 characters, pitching a ridiculous invention
-// that fixes a tiny everyday annoyance: sitting too long.
-// Writes the pitch as plain text to /output/entry.txt with no trailing newline.
+// One-sentence absurd invention pitch (Round 2).
+// The program writes the entry sentence verbatim to /output/entry.txt.
+// No network, no randomness, no environment dependence: the output is
+// a fixed string, so every run produces byte-identical results.
+
 import { mkdirSync, writeFileSync } from "node:fs";
 
-const PITCH =
-  "A chair that gently ejects you after two hours of sitting, then hands you a printed note saying you have a spine and it would like you to use it.";
+const ENTRY =
+  "A pair of earbuds that translates your neighbour's drilling into whale song, so home renovation becomes your lullaby.";
 
-const length = [...PITCH].length;
-if (length < 1 || length > 220) {
-  throw new Error(`pitch must be 1-220 characters, got ${length}`);
+// Self-check: the entry must be exactly one sentence and fit the
+// 220-character limit. Fail loudly instead of writing a bad entry.
+if (ENTRY.length === 0 || ENTRY.length > 220) {
+  throw new Error(`entry length ${ENTRY.length} is outside 1..220 characters`);
 }
-if (PITCH.trim() !== PITCH || PITCH.includes("\n")) {
-  throw new Error("pitch must be a single line with no surrounding whitespace");
-}
-if (PITCH.split(/[.!?]/).filter(Boolean).length !== 1) {
-  throw new Error("pitch must be a single sentence");
+const terminators = ENTRY.replace(/\.$/, "").match(/[.!?]/g);
+if (!ENTRY.endsWith(".") || terminators !== null) {
+  throw new Error("entry must be exactly one sentence ending with a period");
 }
 
 mkdirSync("/output", { recursive: true });
-writeFileSync("/output/entry.txt", PITCH);
-console.log(`${length} characters written to /output/entry.txt`);
+writeFileSync("/output/entry.txt", ENTRY, "utf8");
